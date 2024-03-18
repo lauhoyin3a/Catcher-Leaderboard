@@ -17,18 +17,18 @@ public class SequenceGeneratorService {
     @Autowired
     private MongoOperations mongoOperations;
 
-    public int getSequenceNumber(String sequenceName){
-        // get sequence number
+    // Get the next sequence number for the given sequence name
+    public int getSequenceNumber(String sequenceName) {
+        // Create a query to find the document with the given sequence name
         Query query = new Query(Criteria.where("id").is(sequenceName));
-        // update sequence number
+        // Create an update to increment the sequence number by 1
         Update update = new Update().inc("seq", 1);
-        // modify in document
-        DbSequence counter = mongoOperations.findAndModify(query, update, options().returnNew(true).upsert(true),DbSequence.class);
+        // Find and modify the document, returning the modified document
+        DbSequence counter = mongoOperations.findAndModify(query, update, options().returnNew(true).upsert(true), DbSequence.class);
 
-        if (Objects.isNull(counter)){
+        if (Objects.isNull(counter)) {
             return 1;
-        }
-        else{
+        } else {
             return counter.getSeq();
         }
 
